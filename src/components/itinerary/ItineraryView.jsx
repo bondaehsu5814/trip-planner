@@ -1,0 +1,51 @@
+import DayView from './DayView'
+import { getDays } from '../../lib/dateUtils'
+
+export default function ItineraryView({
+  trip, config, getBooking, inspirations,
+  onToggleStatus, onUpdateNotes, onAddInspiration, onDeleteInspiration, onAssignInspiration,
+}) {
+  if (!trip?.start_date || !trip?.end_date) {
+    return (
+      <p className="rounded-[10px] border border-dashed border-gray-200 py-8 text-center text-sm text-gray-400">
+        請先在「行程設定」填入開始和結束日期
+      </p>
+    )
+  }
+
+  const days = getDays(trip.start_date, trip.end_date)
+
+  return (
+    <div>
+      {days.map((date, i) => {
+        const flights = config.flights.filter(f => f.date === date)
+        const checkInHotels = config.hotels.filter(h => h.checkIn === date)
+        const checkOutHotels = config.hotels.filter(h => h.checkOut === date)
+        // 中間停留的飯店（不顯示卡片，但 check-in/out 日當天用 HotelCard 顯示）
+        const transports = config.transports.filter(t => t.date === date)
+        const dayInspirations = inspirations.filter(item => item.trip_date === date)
+
+        return (
+          <DayView
+            key={date}
+            date={date}
+            dayNumber={i + 1}
+            flights={flights}
+            checkInHotels={checkInHotels}
+            checkOutHotels={checkOutHotels}
+            transports={transports}
+            inspirations={dayInspirations}
+            getBooking={getBooking}
+            onToggleStatus={onToggleStatus}
+            onUpdateNotes={onUpdateNotes}
+            onAddInspiration={(content, category, who, url, comment) =>
+              onAddInspiration(content, category, who, date, url, comment)
+            }
+            onDeleteInspiration={onDeleteInspiration}
+            onAssignInspiration={onAssignInspiration}
+          />
+        )
+      })}
+    </div>
+  )
+}
