@@ -12,8 +12,7 @@ export const CATEGORIES = [
   { value: 'other', label: '其他' },
 ]
 
-// 新增表單（可複用於靈感池和 DayView）
-export function InspirationForm({ onAdd, onCancel, compact = false }) {
+export function InspirationForm({ onAdd, onCancel, compact = false, members }) {
   const [content, setContent] = useState('')
   const [url, setUrl] = useState('')
   const [comment, setComment] = useState('')
@@ -38,7 +37,6 @@ export function InspirationForm({ onAdd, onCancel, compact = false }) {
   return (
     <>
       <form onSubmit={handleSubmit} className="mb-4">
-        {/* 分類 */}
         <div className="mb-2 flex flex-wrap gap-1.5">
           {CATEGORIES.map(c => (
             <button
@@ -57,7 +55,6 @@ export function InspirationForm({ onAdd, onCancel, compact = false }) {
           ))}
         </div>
 
-        {/* 名稱 */}
         <input
           type="text"
           value={content}
@@ -67,7 +64,6 @@ export function InspirationForm({ onAdd, onCancel, compact = false }) {
           style={{ border: '0.5px solid #c4c1f0', background: '#EEEDFE' }}
         />
 
-        {/* URL */}
         <input
           type="url"
           value={url}
@@ -77,13 +73,12 @@ export function InspirationForm({ onAdd, onCancel, compact = false }) {
           style={{ border: '0.5px solid #c4c1f0', background: '#EEEDFE' }}
         />
 
-        {/* Comment */}
         <textarea
           value={comment}
           onChange={e => setComment(e.target.value)}
           placeholder="備註（可選）"
           rows={compact ? 1 : 2}
-          className="mb-2 w-full rounded-[10px] px-3 py-2 text-sm focus:outline-none resize-none"
+          className="mb-2 w-full resize-none rounded-[10px] px-3 py-2 text-sm focus:outline-none"
           style={{ border: '0.5px solid #c4c1f0', background: '#EEEDFE' }}
         />
 
@@ -105,14 +100,13 @@ export function InspirationForm({ onAdd, onCancel, compact = false }) {
       </form>
 
       {showWhoBar && (
-        <WhoBar onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
+        <WhoBar members={members} onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
       )}
     </>
   )
 }
 
-// 通用靈感池（顯示沒有指定日期的靈感）
-export default function InspirationPool({ items, onAdd, onDelete, onAssign, days = [], error, onClearError }) {
+export default function InspirationPool({ items, onAdd, onDelete, onAssign, onUpdate, days = [], members, showCosts, error, onClearError }) {
   const [open, setOpen] = useState(true)
   const poolItems = items.filter(i => !i.trip_date)
 
@@ -132,13 +126,25 @@ export default function InspirationPool({ items, onAdd, onDelete, onAssign, days
       {open && (
         <>
           <ErrorMessage message={error} onDismiss={onClearError} />
-          <InspirationForm onAdd={(content, category, who, url, comment) => onAdd(content, category, who, null, url, comment)} />
+          <InspirationForm
+            members={members}
+            onAdd={(content, category, who, url, comment) => onAdd(content, category, who, null, url, comment)}
+          />
 
           {poolItems.length === 0 ? (
             <p className="py-6 text-center text-sm text-gray-400">還沒有未分配的靈感</p>
           ) : (
             poolItems.map(item => (
-              <InspirationItem key={item.id} item={item} onDelete={onDelete} days={days} onAssign={onAssign} />
+              <InspirationItem
+                key={item.id}
+                item={item}
+                onDelete={onDelete}
+                onAssign={onAssign}
+                onUpdateItem={onUpdate}
+                days={days}
+                showCosts={showCosts}
+                members={members}
+              />
             ))
           )}
         </>

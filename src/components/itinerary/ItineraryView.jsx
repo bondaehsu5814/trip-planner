@@ -2,8 +2,9 @@ import DayView from './DayView'
 import { getDays } from '../../lib/dateUtils'
 
 export default function ItineraryView({
-  trip, config, getBooking, inspirations,
-  onToggleStatus, onUpdateNotes, onAddInspiration, onDeleteInspiration, onAssignInspiration,
+  trip, config, getBooking, inspirations, members, showCosts,
+  onToggleStatus, onUpdateNotes, onAddInspiration, onDeleteInspiration,
+  onAssignInspiration, onUpdateInspiration, onReorderInspirations,
 }) {
   if (!trip?.start_date || !trip?.end_date) {
     return (
@@ -21,9 +22,10 @@ export default function ItineraryView({
         const flights = config.flights.filter(f => f.date === date)
         const checkInHotels = config.hotels.filter(h => h.checkIn === date)
         const checkOutHotels = config.hotels.filter(h => h.checkOut === date)
-        // 中間停留的飯店（不顯示卡片，但 check-in/out 日當天用 HotelCard 顯示）
         const transports = config.transports.filter(t => t.date === date)
-        const dayInspirations = inspirations.filter(item => item.trip_date === date)
+        const dayInspirations = inspirations
+          .filter(item => item.trip_date === date)
+          .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
 
         return (
           <DayView
@@ -43,6 +45,10 @@ export default function ItineraryView({
             }
             onDeleteInspiration={onDeleteInspiration}
             onAssignInspiration={onAssignInspiration}
+            onUpdateInspiration={onUpdateInspiration}
+            onReorderInspirations={onReorderInspirations}
+            showCosts={showCosts}
+            members={members}
           />
         )
       })}
