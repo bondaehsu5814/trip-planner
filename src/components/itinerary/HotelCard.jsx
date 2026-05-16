@@ -13,7 +13,7 @@ function isDeadlineSoon(deadline) {
   return days >= 0 && days <= 7
 }
 
-export default function HotelCard({ hotel, booking, onToggleStatus, onUpdateNotes }) {
+export default function HotelCard({ hotel, booking, onToggleStatus, onUpdateNotes, members }) {
   const status = booking?.status ?? 'pending'
   const [showWhoBar, setShowWhoBar] = useState(false)
   const [editingNotes, setEditingNotes] = useState(false)
@@ -112,7 +112,7 @@ export default function HotelCard({ hotel, booking, onToggleStatus, onUpdateNote
       </div>
 
       {showWhoBar && (
-        <WhoBar onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
+        <WhoBar members={members} onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
       )}
     </>
   )

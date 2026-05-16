@@ -7,7 +7,7 @@ const STATUS_STYLES = {
   booked: { background: '#EAF3DE', borderColor: '#C0DD97' },
 }
 
-export default function TransportCard({ transport, booking, onToggleStatus, onUpdateNotes }) {
+export default function TransportCard({ transport, booking, onToggleStatus, onUpdateNotes, members }) {
   const status = booking?.status ?? 'pending'
   const [showWhoBar, setShowWhoBar] = useState(false)
   const [editingNotes, setEditingNotes] = useState(false)
@@ -77,7 +77,7 @@ export default function TransportCard({ transport, booking, onToggleStatus, onUp
       </div>
 
       {showWhoBar && (
-        <WhoBar onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
+        <WhoBar members={members} onSelect={handleWhoSelect} onCancel={() => setShowWhoBar(false)} />
       )}
     </>
   )

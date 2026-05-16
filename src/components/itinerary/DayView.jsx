@@ -118,7 +118,7 @@ export default function DayView({
             <SortableInspirationItem
               key={item.id}
               item={item}
-              onDelete={onDeleteInspiration}
+              onDelete={(id) => onAssignInspiration(id, null)}
               onAssign={onAssignInspiration}
               showCosts={showCosts}
               onUpdateItem={onUpdateInspiration}
