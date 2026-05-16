@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabaseClient'
 
-const EMPTY = { flights: [], hotels: [], transports: [] }
+const EMPTY = { flights: [], hotels: [], transports: [], members: [] }
 
 export function useTripConfig(tripId) {
   const [config, setConfig] = useState(EMPTY)
@@ -21,9 +21,11 @@ export function useTripConfig(tripId) {
       if (data) {
         setConfigId(data.id)
         setConfig({
+          ...data.config,
           flights: data.config?.flights ?? [],
           hotels: data.config?.hotels ?? [],
           transports: data.config?.transports ?? [],
+          members: data.config?.members ?? [],
         })
       }
     } catch {
