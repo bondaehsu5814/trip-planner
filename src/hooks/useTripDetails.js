@@ -26,9 +26,13 @@ export function useTripDetails(tripId) {
     setTrip(t => ({ ...t, ...updates }))
     try {
       const { error: err } = await supabase
-        .from('trips').update(updates).eq('id', tripId)
-      if (err) throw err
-    } catch {
+        .from('trips').update(updates).eq('id', tripId).select()
+      if (err) {
+        console.error('[updateTrip] Supabase error:', err, 'tripId:', tripId, 'updates:', updates)
+        throw err
+      }
+    } catch (e) {
+      console.error('[updateTrip] caught:', e)
       setTrip(prev)
       setError('行程更新失敗')
     }

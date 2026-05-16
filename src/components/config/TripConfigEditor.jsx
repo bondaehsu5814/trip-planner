@@ -264,7 +264,7 @@ export default function TripConfigEditor({ trip, config, onSaveConfig, onUpdateT
   }
 
   function saveDates() {
-    onUpdateTrip({ name: draftName, start_date: draftStart, end_date: draftEnd })
+    onUpdateTrip({ name: draftName, start_date: draftStart || null, end_date: draftEnd || null })
     setEditingDates(false)
   }
 
